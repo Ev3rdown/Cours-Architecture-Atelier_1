@@ -1,9 +1,14 @@
+from enum import Enum
 import socket
+from time import sleep
 
+class Status(Enum):
+    GAME = 0
+    PLAYER = 0
 
 def request(verb, url, value):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.connect(("127.0.0.1", 5000))
+        sock.connect(("127.0.0.1", 5001))
         sock.send(f"{verb} /{url} HTTP/1.1\r\n".encode())
         sock.send("Content-Type: text/plain\r\n".encode())
         sock.send(f"Content-Length: {len(value)}\r\n\r\n".encode())
@@ -16,37 +21,40 @@ def request(verb, url, value):
         sock.close()
 
 def get_player_number():
-    request("GET","player_number",)
+    request("GET","player_number","")
     # Parser la requête/trouver une autre méthode
     return 1;
+
+def update_status(status_GAME,status_PLAYER):
+    req = request("GET","status","")
+    status_GAME = 0;
+    status_PLAYER = 1;
 
 if __name__ == '__main__':
 
     player_number = get_player_number()
+    status_GAME=0
+    status_PLAYER=1
+    update_status(status_GAME,status_PLAYER)
 
-    while player_number(1):
-        print("Joueur 1 a vous de jouer :")
-        player_choice = input(f"Choisissez une case :")
-        player_number = player_choice
+    print("Vous êtes le joueur "+str(player_number))
+    while status_GAME==0:
+        if status_PLAYER==player_number:
+            request("GET","grid","")
+            print("Joueur "+ str(player_number) +" a vous de jouer :")
+            case=int(input("Entrer un numéro de case entre 1 et 9:"))-1
+            req = request("POST","play",str(player_number)+"="+str(case))
+            print("sent post")
+            if req == 1:
+                print("Erreur")
+                continue
         else:
-            items = content.split('/')
-            if len(items) > 1:
-                request("POST", items[0], items[1])
-                request("GET", "", "")
-            else:
-                request("GET", items[0],"")
-
-
-
-    while True:
-        content = input("Joueur X veuillez choisir une case :")
-        if content == ("2"):
-            request("POST", items[0])
-            break
-        else:
-            items = content.split('/')
-            if len(items) > 1:
-                request("POST", items[0], items[1])
-                request("GET", "", "")
-            else:
-                request("GET", items[0],"")
+            print("En attente de l'autre joueur")
+        update_status(status_GAME,status_PLAYER)
+        sleep(1)
+    if status_GAME!=3:
+        print("Victoire du joueur "+str(status_GAME))
+    elif status_GAME==3:
+        print("Pas de vainqueur")
+    else:
+        print("Erreur Fatale")
