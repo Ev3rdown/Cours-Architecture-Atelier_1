@@ -15,11 +15,33 @@ def request(verb, url, value):
             print(s)
         sock.close()
 
+def get_player_number():
+    request("GET","player_number",)
+    # Parser la requête/trouver une autre méthode
+    return 1;
 
 if __name__ == '__main__':
+
+    player_number = get_player_number()
+
+    while player_number(1):
+        print("Joueur 1 a vous de jouer :")
+        player_choice = input(f"Choisissez une case :")
+        player_number = player_choice
+        else:
+            items = content.split('/')
+            if len(items) > 1:
+                request("POST", items[0], items[1])
+                request("GET", "", "")
+            else:
+                request("GET", items[0],"")
+
+
+
     while True:
-        content = input("Key/Text (Q to quit) :")
-        if content == ("Q" or "q"):
+        content = input("Joueur X veuillez choisir une case :")
+        if content == ("2"):
+            request("POST", items[0])
             break
         else:
             items = content.split('/')
