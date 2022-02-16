@@ -1,10 +1,5 @@
-from enum import Enum
 import socket
 from time import sleep
-
-class Status(Enum):
-    GAME = 0
-    PLAYER = 0
 
 def request(verb, url, value):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -25,17 +20,18 @@ def get_player_number():
     # Parser la requête/trouver une autre méthode
     return 1;
 
-def update_status(status_GAME,status_PLAYER):
+def update_status():
     req = request("GET","status","")
     status_GAME = 0;
     status_PLAYER = 1;
+    return status_GAME,status_PLAYER
 
 if __name__ == '__main__':
 
     player_number = get_player_number()
     status_GAME=0
     status_PLAYER=1
-    update_status(status_GAME,status_PLAYER)
+    status_GAME,status_PLAYER  = update_status()
 
     print("Vous êtes le joueur "+str(player_number))
     while status_GAME==0:
@@ -50,7 +46,7 @@ if __name__ == '__main__':
                 continue
         else:
             print("En attente de l'autre joueur")
-        update_status(status_GAME,status_PLAYER)
+        status_GAME,status_PLAYER = update_status()
         sleep(1)
     if status_GAME!=3:
         print("Victoire du joueur "+str(status_GAME))
