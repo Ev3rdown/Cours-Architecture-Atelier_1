@@ -1,5 +1,8 @@
 ## Groupe:
 - Yoann Thebault
+- Benjamin EMMANUEL
+- Sofiane OULD AMARA 
+- Oualid MEZROUI
 
 ## Install:
 
