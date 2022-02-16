@@ -2,6 +2,7 @@ import socket
 from time import sleep
 
 def request(verb, url, value):
+    string = ""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect(("127.0.0.1", 5001))
         sock.send(f"{verb} /{url} HTTP/1.1\r\n".encode())
@@ -12,18 +13,20 @@ def request(verb, url, value):
             s = sock.recv(4096).decode('utf-8')
             if s == '':
                 break;
-            print(s)
+            #print(s)
+            string+=str(s)
         sock.close()
+    return string
 
 def get_player_number():
-    request("GET","player_number","")
-    # Parser la requête/trouver une autre méthode
-    return 1;
+    req = request("GET","player_number","").split("\n")[-1]
+    return int(req);
 
 def update_status():
-    req = request("GET","status","")
-    status_GAME = 0;
-    status_PLAYER = 1;
+    req = request("GET","status","").split("\n")[-1]
+    vals = req.split("/")
+    status_GAME = int(vals[0]);
+    status_PLAYER = int(vals[1]);
     return status_GAME,status_PLAYER
 
 if __name__ == '__main__':
@@ -36,14 +39,14 @@ if __name__ == '__main__':
     print("Vous êtes le joueur "+str(player_number))
     while status_GAME==0:
         if status_PLAYER==player_number:
-            request("GET","grid","")
+            print(request("GET","grid",""))
             print("Joueur "+ str(player_number) +" a vous de jouer :")
             case=int(input("Entrer un numéro de case entre 1 et 9:"))-1
             req = request("POST","play",str(player_number)+"="+str(case))
-            print("sent post")
             if req == 1:
                 print("Erreur")
                 continue
+            print(request("GET","grid",""))
         else:
             print("En attente de l'autre joueur")
         status_GAME,status_PLAYER = update_status()
