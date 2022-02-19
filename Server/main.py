@@ -72,12 +72,10 @@ def play_case():
     print(case)
     if isinstance(case,int):
         if(not(-1<case<9)):
-            ret= 4
             ret = 1 # error, impossible case
         x=case%3
         y=int((case-x)/3)
         if(bag["grille"][y][x]==' '):
-            ret= 5
             bag["grille"][y][x]=bag['player_turn']
             switch_player()
             print(bag["player_turn"])
